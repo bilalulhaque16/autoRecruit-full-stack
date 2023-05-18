@@ -1,0 +1,23 @@
+version: '3'
+services:
+  backend:
+    image: erecruitment.azurecr.io/backend
+    domainname: "erecruitment"
+    container_name: "api"
+    build:
+      dockerfile: Dockerfile.prod
+      context: ./backend
+    ports:
+      - "3000:3000"
+    restart: always
+    environment:
+      - PORT=3000
+      - ACCESS_TOKEN_SECRET=808072d8c60a857edfe62a9eefa795f8e468908b5c3dce24058944e589384583731e20cc743593373f45a713108d98e64a4161b8f635c50def1d1c254c583d48
+      - REFRESH_TOKEN_SECRET=ce21587cba807e264fe352d2de5b334b381729993ba4a1e5ff23d2c15ce2d7297a49232d2f929ee83317bf4638608da56851d8776682b612175e84d6fc25fa0d
+      - SALT_ROUNDS=10
+      - AUTH_EMAIL=noreply@kaispe.com
+      - AUTH_PASS=Giga78$$$
+      - BASE_DB_URI=mongodb+srv://bilal:pass123@cluster0.sst6wjd.mongodb.net/?retryWrites=true&w=majority
+      - ADMIN_DB_NAME=super_admin
+      - AZURE_CONNECTION_STRING=DefaultEndpointsProtocol=https;AccountName=ksprecruitmentportal;AccountKey=WYXqG93OdDiGte2axprrrXzLz7L5eT7QGJ9TnITGAxDJIZINdFNvKudRlqw8nAKtUPtdj4WQ7vop+ASt8YlCYA==;EndpointSuffix=core.windows.net
+ 

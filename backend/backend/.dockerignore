@@ -1,0 +1,6 @@
+node_modules
+vercel.json
+.gitignore
+README.md
+.git
+.env.development

@@ -1,0 +1,11 @@
+import { createActionTypes } from "@src/utility"
+
+export const NAVBAR_ACTION_TYPES = createActionTypes("layout", [
+  "GET_BOOKMARKS_SUCCESS",
+  "GET_BOOKMARKS_FAIL",
+  "GET_BOOKMARKS_REQUEST",
+  "UPDATE_BOOKMARKED_REQUEST",
+  "UPDATE_BOOKMARKED_SUCCESS",
+  "UPDATE_BOOKMARKED_FAIL",
+  "HANDLE_SEARCH_QUERY"
+])
