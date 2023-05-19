@@ -29,8 +29,6 @@ import "../../model/seeker_question.model.js";
 import "../../model/job_interview_level.model.js";
 import "../../model/job_invitation_box.model.js";
 
-
-
 const clientOption = {
   socketTimeoutMS: 30000,
   keepAlive: true,

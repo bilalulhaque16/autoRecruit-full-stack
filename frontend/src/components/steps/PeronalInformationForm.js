@@ -96,11 +96,10 @@ const PersonalInformationForm = ({ stepper, type, setData }) => {
       city: Yup.string().required("Required"),
       postal_code: Yup.string().required("Required"),
       email: Yup.string().required("Required").email("Invalid email address"),
-      phone_number: Yup.string()
-        .required("Required"),
-        // .matches(/^[0-9]+$/, "Must be only digits")
-        // .min(10, "Must be exactly 10 digits")
-        // .max(10, "Must be exactly 10 digits"),
+      phone_number: Yup.string().required("Required"),
+      // .matches(/^[0-9]+$/, "Must be only digits")
+      // .min(10, "Must be exactly 10 digits")
+      // .max(10, "Must be exactly 10 digits"),
       // links: Yup.array().of(
       //   Yup.object().shape({
       //     platform: Yup.string().required("Required"),
@@ -145,7 +144,6 @@ const PersonalInformationForm = ({ stepper, type, setData }) => {
   //   }
   // }, [resumeURL])
 
-  
   useEffect(() => {
     // setFieldValue('links.0.platform', {value: 'linkedin', label: 'LinkedIn'})
     // setFieldValue('links[0].platform', 'github')
@@ -155,9 +153,18 @@ const PersonalInformationForm = ({ stepper, type, setData }) => {
     if (!isNullObject(resumeData)) {
       const data = resumeData.categorizedData
       const personal_info = data.personal_info
+      // if links are not present in resume then add empty links
+      if (personal_info.links.length === 0) {
+        personal_info.links = [
+          {
+            platform: "",
+            url: ""
+          }
+        ]
+      }
 
       setValues(personal_info)
-      setFieldValue('resume_url', resumeData.url)
+      setFieldValue("resume_url", resumeData.url)
       // setFieldValue('country',  {
       //   value: personal_info.country,
       //   label: personal_info.country
@@ -168,10 +175,9 @@ const PersonalInformationForm = ({ stepper, type, setData }) => {
       //   console.log(personal_info.links[i])
       //   setFieldValue(`links.${i}.platform`, personal_info.links[i].platform)
       //   setFieldValue(`links[${i}].url`, personal_info.links[i].url)
-      // } 
+      // }
       // setFieldValue(`links.0.platform`, 'linkedin')
       // setFieldValue(`links.0.platform`, 'github')
-
     } else {
       console.log("No", resumeData)
     }
@@ -293,35 +299,35 @@ const PersonalInformationForm = ({ stepper, type, setData }) => {
       // url: "https://www.linkedin.com/in/"
     },
     // for designers
-    { 
+    {
       // value: "Twitter",
-      value: "twitter", 
+      value: "twitter",
       label: "Twitter"
-      // url: "https://twitter.com/" 
+      // url: "https://twitter.com/"
     },
     // { value: "Behance",
-    { 
-    value: "behance", 
-    label: "Behance" 
-    // url: "https://www.behance.net/" 
-  },
-  // { value: "Dribbble",
-  { 
-    value: "dribble", 
-    label: "Dribble" 
-  // url: "https://dribbble.com/" 
-   },
+    {
+      value: "behance",
+      label: "Behance"
+      // url: "https://www.behance.net/"
+    },
+    // { value: "Dribbble",
+    {
+      value: "dribble",
+      label: "Dribble"
+      // url: "https://dribbble.com/"
+    },
     // for developers
-  { 
-    // value: "GitHub",
-    value: "github", 
-    label: "GitHub"
-    // url: "https://www.github.com/" 
-  },
-  { 
-    value: "Other", 
-    label: "Other"
-      // url: "" 
+    {
+      // value: "GitHub",
+      value: "github",
+      label: "GitHub"
+      // url: "https://www.github.com/"
+    },
+    {
+      value: "Other",
+      label: "Other"
+      // url: ""
     }
   ]
 
@@ -402,9 +408,7 @@ const PersonalInformationForm = ({ stepper, type, setData }) => {
   // }
 
   useEffect(() => {
- 
     if (isNullObject(resumeData) && files.length > 0) {
-      
       dispatch(resumeformActions.uploadResumeRequest(files[0]))
     }
   }, [files])
@@ -477,7 +481,11 @@ const PersonalInformationForm = ({ stepper, type, setData }) => {
                 name="country"
                 // defaultValue={CountryOptions[5]}
                 // value={values.country}
-                value={CountryOptions.find((option) => option.value === values.country) || ''}
+                value={
+                  CountryOptions.find(
+                    (option) => option.value === values.country
+                  ) || ""
+                }
                 onChange={(e) => {
                   setFieldValue("country", e.value)
                   // console.log("Dropwodn", e.value, e)
@@ -663,9 +671,8 @@ const PersonalInformationForm = ({ stepper, type, setData }) => {
                     <Tag key={i} className="repeater-wrapper">
                       <div className="d-flex justify-content-end  invoice-product-actions px-25">
                         {/* remove url and same platform */}
-                        
-                      {
-                        values.links.length > 1 && (
+
+                        {values.links.length > 1 && (
                           <X
                             size={18}
                             className="cursor-pointer"
@@ -679,11 +686,9 @@ const PersonalInformationForm = ({ stepper, type, setData }) => {
                                 )
                               ])
                               deleteForm(e, i, "links")
-                            }
-                      }  
-                      />
-                        )
-                      }
+                            }}
+                          />
+                        )}
                       </div>
                       <Row>
                         <Col>
@@ -702,15 +707,17 @@ const PersonalInformationForm = ({ stepper, type, setData }) => {
                                 //   setFieldValue(`links.${i}.platform`, e.value)
                                 //   console.log(`links.${i}.platform`, e)
                                 // }}
-                                
+
                                 // value={values.links[i].platform}
 
-                                value={platformOption.find((option) => option.value === values.links[i].platform || '')}
-
+                                value={platformOption.find(
+                                  (option) =>
+                                    option.value === values.links[i].platform ||
+                                    ""
+                                )}
                                 onChange={(e) => {
                                   setFieldValue(`links[${i}].platform`, e.value)
                                 }}
-
                                 theme={selectThemeColors}
                                 className="react-select"
                                 classNamePrefix="select"
@@ -774,8 +781,7 @@ const PersonalInformationForm = ({ stepper, type, setData }) => {
                         // { ...initialValues.links[i] }
                         { ...initialValues.links[0] }
                       ])
-                    }
-                  }
+                    }}
                   >
                     <Plus size={14} className="me-25" />
                     <span className="align-middle">Add Item</span>

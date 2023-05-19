@@ -43,6 +43,8 @@ import {
   readSeekerQuestionService,
   updateSeekerQuestionService,
   deleteSeekerQuestionService,
+  // createSeekerSkillService,
+  // getAllSeekerSkillsService
 } from "../service/profile.service.js";
 
 import { getConnection } from "../db/connectionManager.config.js";
@@ -527,6 +529,31 @@ const deleteSkillSetController = async (req, res) => {
   }
 };
 
+
+
+// // Seeker skills
+// const createSeekerSkillController = async (req, res) => {
+//   try {
+//     const dbConnection = getConnection();
+
+//     const data = await createSeekerSkillService(dbConnection, req);
+//     res.status(data.status).json(data);
+//   } catch (error) {
+//     res.json(error);
+//   }
+// };
+
+// const getAllSeekerSkillsController = async (req, res) => {
+//   try {
+//     const dbConnection = getConnection();
+
+//     const data = await getAllSeekerSkillsService(dbConnection, req);
+//     res.status(data.status).json(data);
+//   } catch (error) {
+//     res.json(error);
+//   }
+// };
+
 // All in one add
 const createAllInOneProfileController = async (req, res) => {
   try {
@@ -588,7 +615,9 @@ const categorizeCVWithAIController = async (req, res) => {
   //         // data = `${data}Cluster the above circular vita into topic categories based on patterns seen within the text. In the skills section you have to set only keywords Example Output format:\n{\n"personal_info\": {\n \"address\": \"\",\n \"city\": \"\",\n \"country\": \"\",\n \"email\": \"\",\n \"first_name\": \"\",\n \"last_name\": \"\",\n \"links\":[\n {\n \"platform\": \"\",\n \"url\": \"\"\n }\n ],\n \"middle_name\": \"\",\n \"phone_number\": \"\",\n \"postal_code\": \"\",\n \"preferred_name\": \"\",\n \"resume_url\": \"\"\n },\n \"work_and_experience\": {\n \"education_details\": [\n {\n \"certificate_degree_name\": \"\",\n \"cgpa\": \"\",\n \"completion_date\": \"\",\n \"field_of_study\": \"\",\n \"institute_university_name\": \"\",\n \"is_percentage\": \"\",\n \"starting_date\": \"\"\n }\n ],\n \"experience_details\": [\n {\n \"company_name\": \"\",\n \"completion_date\": \"\",\n \"description\": \"\",\n \"is_current_job\": \"\",\n \"job_location_city\": \"\",\n \"job_location_country\": \"\",\n \"job_location_state\": \"\",\n \"job_title\": \"\",\n \"starting_date\": \"\"\n }\n ],\n \"job_categories\": [""],\n \"seeker_languages\":[\n {\n \"fluent\": \"\",\n \"language\": \"\",\n \"reading_proficiency\": \"\",\n \"speaking_proficiency\": \"\"\n }\n ],\n \skills": [""]\n }\n}\n\n\n\n`;
 
 
-  //         data = `${data}Cluster the above circular vita into topic categories based on patterns seen within the text. In the skills section you have to set only keywords, set the platform name in lowercase corresponding to the url provided and remove donot include emails in links array, also convert all the dates to ISO 8601 format and the country should be in title case Example Output format:\n{\n"personal_info\": {\n \"address\": \"\",\n \"city\": \"\",\n \"country\": \"\",\n \"email\": \"\",\n \"first_name\": \"\",\n \"last_name\": \"\",\n \"links\":[\n {\n \"platform\": \"\",\n \"url\": \"\"\n }\n ],\n \"middle_name\": \"\",\n \"phone_number\": \"\",\n \"postal_code\": \"\",\n \"preferred_name\": \"\",\n \"resume_url\": \"\"\n },\n \"work_and_experience\": {\n \"education_details\": [\n {\n \"certificate_degree_name\": \"\",\n \"cgpa\": \"\",\n \"completion_date\": \"\",\n \"field_of_study\": \"\",\n \"institute_university_name\": \"\",\n \"is_percentage\": \"\",\n \"starting_date\": \"\"\n }\n ],\n \"experience_details\": [\n {\n \"company_name\": \"\",\n \"completion_date\": \"\",\n \"description\": \"\",\n \"is_current_job\": \"Boolean\",\n \"job_location_city\": \"\",\n \"job_location_country\": \"\",\n \"job_location_state\": \"\",\n \"job_title\": \"\",\n \"starting_date\": \"\"\n }\n ],\n \"job_categories\": [""],\n \"seeker_languages\":[\n {\n \"fluent\": \"\",\n \"language\": \"\",\n \"reading_proficiency\": \"\",\n \"speaking_proficiency\": \"\"\n }\n ],\n \skills": [""]\n }\n}\n\n\n\n`;
+  //         // data = `${data}Cluster the above circular vita into topic categories based on patterns seen within the text. In the skills section you have to set only keywords, set the platform name in lowercase corresponding to the url provided and remove donot include emails in links array, also convert all the dates to ISO 8601 format and the country should be in title case Example Output format:\n{\n"personal_info\": {\n \"address\": \"\",\n \"city\": \"\",\n \"country\": \"\",\n \"email\": \"\",\n \"first_name\": \"\",\n \"last_name\": \"\",\n \"links\":[\n {\n \"platform\": \"\",\n \"url\": \"\"\n }\n ],\n \"middle_name\": \"\",\n \"phone_number\": \"\",\n \"postal_code\": \"\",\n \"preferred_name\": \"\",\n \"resume_url\": \"\"\n },\n \"work_and_experience\": {\n \"education_details\": [\n {\n \"certificate_degree_name\": \"\",\n \"cgpa\": \"\",\n \"completion_date\": \"\",\n \"field_of_study\": \"\",\n \"institute_university_name\": \"\",\n \"is_percentage\": \"\",\n \"starting_date\": \"\"\n }\n ],\n \"experience_details\": [\n {\n \"company_name\": \"\",\n \"completion_date\": \"\",\n \"description\": \"\",\n \"is_current_job\": \"Boolean\",\n \"job_location_city\": \"\",\n \"job_location_country\": \"\",\n \"job_location_state\": \"\",\n \"job_title\": \"\",\n \"starting_date\": \"\"\n }\n ],\n \"job_categories\": [""],\n \"seeker_languages\":[\n {\n \"fluent\": \"\",\n \"language\": \"\",\n \"reading_proficiency\": \"\",\n \"speaking_proficiency\": \"\"\n }\n ],\n \skills": [""]\n }\n}\n\n\n\n`;
+  //         data = `${data}Cluster the above circular vita into topic categories based on patterns seen within the text. In the seeker_skills inside the skill_name section you have to set only keywords, set the platform name in lowercase corresponding to the url provided and remove donot include emails in links array, also convert all the dates to ISO 8601 format and the country should be in title case Example Output format:\n{\n"personal_info\": {\n \"address\": \"\",\n \"city\": \"\",\n \"country\": \"\",\n \"email\": \"\",\n \"first_name\": \"\",\n \"last_name\": \"\",\n \"links\":[\n {\n \"platform\": \"\",\n \"url\": \"\"\n }\n ],\n \"middle_name\": \"\",\n \"phone_number\": \"\",\n \"postal_code\": \"\",\n \"preferred_name\": \"\",\n \"resume_url\": \"\"\n },\n \"work_and_experience\": {\n \"education_details\": [\n {\n \"certificate_degree_name\": \"\",\n \"cgpa\": \"\",\n \"completion_date\": \"\",\n \"field_of_study\": \"\",\n \"institute_university_name\": \"\",\n \"is_percentage\": \"\",\n \"starting_date\": \"\"\n }\n ],\n \"experience_details\": [\n {\n \"company_name\": \"\",\n \"completion_date\": \"\",\n \"description\": \"\",\n \"is_current_job\": \"Boolean\",\n \"job_location_city\": \"\",\n \"job_location_country\": \"\",\n \"job_location_state\": \"\",\n \"job_title\": \"\",\n \"starting_date\": \"\"\n }\n ],\n \"job_categories\": [""],\n \"seeker_languages\":[\n {\n \"fluent\": \"\",\n \"language\": \"\",\n \"reading_proficiency\": \"\",\n \"speaking_proficiency\": \"\"\n }\n ],\n \"seeker_skills\":[\n {\n \"skill_name\": \"\",\n \"skill_level\": \"0\"\n }\n ]\n}\n}\n\n\n\n`;
+
 
 
   //         // Open AI work
@@ -651,6 +680,7 @@ res.status(200).json({
                   "url": "github.com/bilalulhaque"
               }
           ],
+          // "links": [],
           "middle_name": "Ul",
           "phone_number": "+92 (345) 2156788",
           "postal_code": "",
@@ -722,24 +752,38 @@ res.status(200).json({
                   "speaking_proficiency": ""
               }
           ],
-          "skills": [
-              "Python",
-              "PHP",
-              "Django",
-              "Flask",
-              "Node JS",
-              "Windows",
-              "Linux",
-              "HTML",
-              "CSS",
-              "JavaScript",
-              "ReactJS",
-              "MYSQL",
-              "SQLite",
-              "PostgreSQL",
-              "Docker",
-              "GIT"
-          ]
+          // "skills": [
+          //     "Python",
+          //     "PHP",
+          //     "Django",
+          //     "Flask",
+          //     "Node JS",
+          //     "Windows",
+          //     "Linux",
+          //     "HTML",
+          //     "CSS",
+          //     "JavaScript",
+          //     "ReactJS",
+          //     "MYSQL",
+          //     "SQLite",
+          //     "PostgreSQL",
+          //     "Docker",
+          //     "GIT"
+          // ]
+          "seeker_skills": [
+            {
+                "skill_name": "UI / UX Designing",
+                "skill_level": ""
+            },
+            {
+                "skill_name": "Graphic Designing",
+                "skill_level": ""
+            },
+            {
+                "skill_name": "MySQL",
+                "skill_level": ""
+            }
+        ]
       }
   }
 })
@@ -799,4 +843,7 @@ export {
   deleteSeekerQuestionController,
   //
   categorizeCVWithAIController,
+
+  // createSeekerSkillController,
+  // getAllSeekerSkillsController
 };

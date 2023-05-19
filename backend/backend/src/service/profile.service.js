@@ -22,6 +22,7 @@ import {
   getSpecificDataAllDetails,
   createSeekerLanguage,
   createSeekerQuestion,
+  // createSeekerSkill
 } from "../util/db_calls/profile.calls.js";
 
 // Seeker profile
@@ -118,20 +119,21 @@ const readSeekerProfileService = async (tenantDbConnection, request) => {
         select:
           "is_current_job start_date end_date job_title description company_name job_location_city job_location_state job_location_country",
       },
+      // {
+      //   path: "work_and_experience.profile_visit_logs",
+      //   select: "visit_date is_resume_downloaded is_job_notification_sent",
+      // },
+      // {
+      //   path: "work_and_experience.seeker_skill_sets",
+      //   select: "skill_level skill_set_id",
+      //   populate: {
+      //     path: "skill_set_id",
+      //     select: "skill_set_name",
+      //   },
+      // },
       {
-        path: "work_and_experience.profile_visit_logs",
-        select: "visit_date is_resume_downloaded is_job_notification_sent",
-      },
-      {
-        path: "work_and_experience.seeker_skill_sets",
-        select: "skill_level skill_set_id",
-        populate: {
-          path: "skill_set_id",
-          select: "skill_set_name",
-        },
-      },
-      {
-        path: "work_and_experience.job_categories"
+        path: "work_and_experience.job_categories",
+        select: "name"
       },
       {
         path: "work_and_experience.seeker_languages",
@@ -142,7 +144,7 @@ const readSeekerProfileService = async (tenantDbConnection, request) => {
         select: "ques ans",
       },
     ],
-    "-createdAt -updatedAt -__v -delete_status"
+    "-createdAt -updatedAt -__v -delete_status -work_and_experience.profile_visit_logs -work_and_experience.seeker_skill_sets"
   );
 
   if (!profile) return status_codes.recordNotFound(profile);
@@ -907,7 +909,7 @@ const deleteSkillSetService = async (tenantDbConnection, request) => {
 // All seeker profile details add
 const createAllInOneProfileService = async (tenantDbConnection, request) => {
   // Calling models from cache
-  const Seeker_Skill_Set = await tenantDbConnection.model("seeker_skill_set");
+  // const Seeker_Skill_Set = await tenantDbConnection.model("seeker_skill_set");
   const Education_Details = await tenantDbConnection.model("education_details");
   const Experience_Details = await tenantDbConnection.model(
     "experience_details"
@@ -916,7 +918,9 @@ const createAllInOneProfileService = async (tenantDbConnection, request) => {
   const Seeker_Question = await tenantDbConnection.model("seeker_question");
   const Seeker_Profile = await tenantDbConnection.model("seeker_profile");
   const User_Account = await tenantDbConnection.model("user_account");
-
+  
+  let seeker_skills = request.body.work_and_experience.seeker_skills
+  
   // Checking if profile already exists or not
   const profile = await getSpecificData(Seeker_Profile, {
     user_account_id: request.user.id,
@@ -943,11 +947,11 @@ const createAllInOneProfileService = async (tenantDbConnection, request) => {
       seeker_profile_id: data._id,
     }));
 
-  const seeker_skill_sets_arr =
-    request.body.work_and_experience.seeker_skill_sets.map((arg) => ({
-      ...arg,
-      seeker_profile_id: data._id,
-    }));
+  // const seeker_skill_sets_arr =
+  //   request.body.work_and_experience.seeker_skill_sets.map((arg) => ({
+  //     ...arg,
+  //     seeker_profile_id: data._id,
+  //   }));
 
   const seeker_languages_arr =
     request.body.work_and_experience.seeker_languages.map((arg) => ({
@@ -959,6 +963,11 @@ const createAllInOneProfileService = async (tenantDbConnection, request) => {
     ...arg,
     seeker_profile_id: data._id,
   }));
+
+  // const seeker_skills_arr = request.body.work_and_experience.seeker_skills.map((arg) => ({
+  //   ...arg,
+  //   seeker_profile_id: data._id,
+  // }));
 
   const job_categories = request.body.work_and_experience.job_categories;
 
@@ -976,11 +985,11 @@ const createAllInOneProfileService = async (tenantDbConnection, request) => {
   );
   const experience_details = experienceDetails.map((arg) => arg._id);
 
-  const seekerSkillSet = await createBulk(
-    Seeker_Skill_Set,
-    seeker_skill_sets_arr
-  );
-  const seeker_skill_sets = seekerSkillSet.map((arg) => arg._id);
+  // const seekerSkillSet = await createBulk(
+  //   Seeker_Skill_Set,
+  //   seeker_skill_sets_arr
+  // );
+  // const seeker_skill_sets = seekerSkillSet.map((arg) => arg._id);
 
   const seekerLanguages = await createBulk(
     Seeker_Language,
@@ -994,19 +1003,24 @@ const createAllInOneProfileService = async (tenantDbConnection, request) => {
   );
   const seeker_questions = seekerQuestions.map((arg) => arg._id);
 
+  // const seekerSkill = await createBulk(
+  //   Seeker_Skill,
+  //   seeker_skills_arr
+  // );
+  // const seeker_skills = seekerSkill.map((arg) => arg._id);
+
   // Adding all the saved referenced documents in the seeker profile database
   data.work_and_experience = {
     education_details,
     experience_details,
-    seeker_skill_sets,
+    // seeker_skill_sets,
     seeker_languages,
-    job_categories
+    job_categories,
+    seeker_skills
   };
   data.seeker_questions = seeker_questions;
 
   // Saving it finally
-
-
   data.save();
 
   // Updating the seeker profile id in user account
@@ -1061,6 +1075,38 @@ const uploadCVService = async (request) => {
   return status_codes.OK(blockBlobClient.url);
 };
 
+
+
+// // Seeker skills
+// const createSeekerSkillService = async (tenantDbConnection, request) => {
+//   const Seeker_Skill = await tenantDbConnection.model("seeker_skill");
+//   const Seeker_Profile = await tenantDbConnection.model("seeker_profile");
+
+//   const profile = await getSpecificData(Seeker_Profile, {
+//     user_account_id: request.user.id,
+//     delete_status: false,
+//   });
+
+//   const data = await createSeekerSkill(Seeker_Skill, request, profile._id);
+//   return status_codes.recordCreated();
+// };
+
+// const getAllSeekerSkillsService = async (tenantDbConnection, request) => {
+//   const { page, perPage } = request.query;
+//   const options = {
+//     page: parseInt(page) || 1,
+//     limit: parseInt(perPage) || 50,
+//   };
+//   const Seeker_Skill = await tenantDbConnection.model("seeker_skill");
+
+//   const foundData = await getAllData(Seeker_Skill, {delete_status: false}, options);
+
+//   if (!foundData.totalDocs) {
+//     return status_codes.recordNotFound(foundData);
+//   } else {
+//     return status_codes.OK(foundData);
+//   }
+// };
 
 export {
   // Seeker profile
@@ -1124,4 +1170,7 @@ export {
   readSeekerQuestionService,
   updateSeekerQuestionService,
   deleteSeekerQuestionService,
+
+  // createSeekerSkillService,
+  // getAllSeekerSkillsService
 };

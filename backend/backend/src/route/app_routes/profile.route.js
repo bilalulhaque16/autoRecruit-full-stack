@@ -67,6 +67,10 @@ router
   .delete(profileController.deleteSeekerLanguageController);
 
 
+// router.route("/seeker_skills")
+//   .get(profileController.getAllSeekerSkillsController)
+//   .post(profileController.createSeekerSkillController)
+
 
 // Seeker question routes
 router

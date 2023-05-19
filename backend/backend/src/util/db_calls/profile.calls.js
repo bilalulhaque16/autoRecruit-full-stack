@@ -126,6 +126,16 @@ const createSeekerQuestion = (modelName, request, profileId) => {
 //     const model = await modelName.updateOne(filter, update);
 //     return model
 // }
+
+
+// const createSeekerSkill = (modelName, request, profileId) => {
+//   const data = new modelName(request.body);
+//   data.seeker_profile_id = profileId;
+//   data.save();
+//   return data;
+// };
+
+
 export {
   getAllData,
   createSeekerProfileData,
@@ -139,5 +149,6 @@ export {
   createBulk,
   getSpecificDataAllDetails,
   createSeekerLanguage,
-  createSeekerQuestion
+  createSeekerQuestion,
+  // createSeekerSkill
 };

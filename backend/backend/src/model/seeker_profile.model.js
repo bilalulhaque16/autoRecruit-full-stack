@@ -50,13 +50,16 @@ const seeker_profileSchema = new mongoose.Schema(
       ],
       job_categories: [
         { type: mongoose.Schema.Types.ObjectId, ref: "job_category" },
+      ],
+      // seeker_skills: [
+      //   { type: mongoose.Schema.Types.ObjectId, ref: "seeker_skill" },
+      // ],
+      seeker_skills: [
+        {
+          skill_name: String,
+          skill_level: Number
+        }
       ]
-      // job_categories: [
-      //   {
-      //     name: String,
-      //     value: { type: mongoose.Schema.Types.ObjectId, ref: "job_category" }
-      //   },
-      // ]
     },
     seeker_questions: [
       { type: mongoose.Schema.Types.ObjectId, ref: "seeker_question" },

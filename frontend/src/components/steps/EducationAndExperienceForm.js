@@ -23,7 +23,6 @@ import makeAnimated from "react-select/animated"
 import { selectThemeColors } from "@utils"
 import { useFormik } from "formik"
 import { useTranslation } from "react-i18next"
-import { set } from "react-hook-form"
 
 const EducationAndExperienceForm = ({ stepper, type, setData }) => {
   const { t } = useTranslation()
@@ -43,7 +42,6 @@ const EducationAndExperienceForm = ({ stepper, type, setData }) => {
   const jobCategories = useSelector(
     (state) => state.jobCategoryReducer.jobCategories
   )
-  console.log("jobCategories", jobCategories)
 
   const { all_skills } = seekerProfile
 
@@ -87,10 +85,10 @@ const EducationAndExperienceForm = ({ stepper, type, setData }) => {
       }
     ],
     job_categories: [],
-    seeker_skill_sets: [
+    seeker_skills: [
       {
         skill_level: "",
-        skill_set_id: ""
+        skill_name: ""
       }
     ],
     seeker_languages: [
@@ -148,10 +146,10 @@ const EducationAndExperienceForm = ({ stepper, type, setData }) => {
       .of(Yup.object().shape({ label: Yup.string(), value: Yup.string() }))
       .min(1, "At least one job category is required"),
 
-    seeker_skill_sets: Yup.array().of(
+    seeker_skills: Yup.array().of(
       Yup.object().shape({
         skill_level: Yup.string().required("Skill level is required"),
-        skill_set_id: Yup.string().required("Skill is required")
+        skill_name: Yup.string().required("Skill is required")
       })
     ),
     seeker_languages: Yup.array().of(
@@ -264,12 +262,7 @@ const EducationAndExperienceForm = ({ stepper, type, setData }) => {
         experience_details: work_and_experience.experience_details,
         education_details: work_and_experience.education_details,
         job_categories: [],
-        seeker_skill_sets: [
-          {
-            skill_level: "",
-            skill_set_id: ""
-          }
-        ],
+        seeker_skills: work_and_experience.seeker_skills,
         seeker_languages: [
           {
             language: "",
@@ -281,7 +274,6 @@ const EducationAndExperienceForm = ({ stepper, type, setData }) => {
       })
       console.log("work_and_experience", work_and_experience)
       // setFieldValue("country", "Pakistan")
-
     } else {
       // setFieldValue("resume_data", "")
       console.log("No", data)
@@ -343,9 +335,9 @@ const EducationAndExperienceForm = ({ stepper, type, setData }) => {
 
   // Cannot Select Same skills Twice and show only non selected skills
   useEffect(() => {
-    if (values.seeker_skill_sets.length > 1) {
-      const selectedskills = values.seeker_skill_sets.map(
-        (skill) => skill.skill_set_id
+    if (values.seeker_skills.length > 1) {
+      const selectedskills = values.seeker_skills.map(
+        (skill) => skill.skill_name
       )
 
       const filteredOptions = all_skills.filter(
@@ -356,10 +348,9 @@ const EducationAndExperienceForm = ({ stepper, type, setData }) => {
     } else {
       setSkillsOptions(all_skills)
     }
-  }, [values.seeker_skill_sets])
+  }, [values.seeker_skills])
 
   useEffect(() => {
-    console.log("jobCategories", jobCategories)
     if (isObjEmpty(!isNullObject(jobCategories))) {
       dispatch(jobCategoryActions.getAllJobCategoriesRequest())
     }
@@ -536,7 +527,7 @@ const EducationAndExperienceForm = ({ stepper, type, setData }) => {
                                   placeholder=""
                                 /> */}
 
-                                {/*<Select
+                            {/*<Select
                                   name={`experience_details.${i}.job_location_state`}
                                   defaultValue={
                                     values.experience_details[i]
@@ -557,7 +548,7 @@ const EducationAndExperienceForm = ({ stepper, type, setData }) => {
                                   placeholder="Select State"
                                   bsSize="sm"
                                 /> */}
-                                {/* {isSubmit &&
+                            {/* {isSubmit &&
                                   errors.experience_details &&
                                   errors.experience_details[i] &&
                                   errors.experience_details[i]
@@ -591,7 +582,7 @@ const EducationAndExperienceForm = ({ stepper, type, setData }) => {
                                   placeholder=""
                                 /> */}
 
-                                {/*                                <Select
+                            {/*                                <Select
                                   name={`experience_details.${i}.job_location_city`}
                                   defaultValue={
                                     values.experience_details[i]
@@ -611,7 +602,7 @@ const EducationAndExperienceForm = ({ stepper, type, setData }) => {
                                   placeholder="Select City"
                                   bsSize="sm"
                                 />*/}
-                                {/* {isSubmit &&
+                            {/* {isSubmit &&
                                   errors.experience_details &&
                                   errors.experience_details[i] &&
                                   errors.experience_details[i]
@@ -667,7 +658,7 @@ const EducationAndExperienceForm = ({ stepper, type, setData }) => {
                                 <Label className="form-label" for="nameMulti">
                                   Start Date*
                                 </Label>
-                                  <Flatpickr
+                                <Flatpickr
                                   value={
                                     values.experience_details[i].starting_date
                                   }
@@ -681,9 +672,12 @@ const EducationAndExperienceForm = ({ stepper, type, setData }) => {
                                     )
                                   }}
                                   options={{
-                                    altInput: true,
-                                    altFormat: 'F Y',
-                                    dateFormat: 'Y-m-d'
+                                    dateFormat: "F, Y",
+                                    mode: "single",
+                                    noCalendar: false,
+                                    enableTime: false,
+                                    monthSelectorType: "static",
+                                    disableMobile: true
                                   }}
                                   onBlur={handleBlur}
                                 />
@@ -707,13 +701,15 @@ const EducationAndExperienceForm = ({ stepper, type, setData }) => {
                                 </Label>
 
                                 <Flatpickr
+                                  disabled={
+                                    values.experience_details[i].is_current_job
+                                  }
                                   value={
                                     values.experience_details[i].completion_date
                                   }
                                   id="date-time-picker"
                                   placeholder="End Date"
                                   className="form-control"
-                                  
                                   onChange={(date) => {
                                     setFieldValue(
                                       `experience_details.${i}.completion_date`,
@@ -721,13 +717,16 @@ const EducationAndExperienceForm = ({ stepper, type, setData }) => {
                                     )
                                   }}
                                   options={{
-                                    altInput: true,
-                                    altFormat: 'F Y',
-                                    dateFormat: 'Y-m-d'
+                                    dateFormat: "F, Y",
+                                    mode: "single",
+                                    noCalendar: false,
+                                    enableTime: false,
+                                    monthSelectorType: "static",
+                                    disableMobile: true
                                   }}
                                   onBlur={handleBlur}
-                                 
                                 />
+
                                 {isSubmit &&
                                   errors.experience_details &&
                                   errors.experience_details[i] &&
@@ -1000,6 +999,14 @@ const EducationAndExperienceForm = ({ stepper, type, setData }) => {
                                       date
                                     )
                                   }}
+                                  options={{
+                                    dateFormat: "F, Y",
+                                    mode: "single",
+                                    noCalendar: false,
+                                    enableTime: false,
+                                    monthSelectorType: "static",
+                                    disableMobile: true
+                                  }}
                                   onBlur={handleBlur}
                                 />
                                 {isSubmit &&
@@ -1031,6 +1038,14 @@ const EducationAndExperienceForm = ({ stepper, type, setData }) => {
                                       `education_details.${i}.completion_date`,
                                       date
                                     )
+                                  }}
+                                  options={{
+                                    dateFormat: "F, Y",
+                                    mode: "single",
+                                    noCalendar: false,
+                                    enableTime: false,
+                                    monthSelectorType: "static",
+                                    disableMobile: true
                                   }}
                                   onBlur={handleBlur}
                                 />
@@ -1123,7 +1138,7 @@ const EducationAndExperienceForm = ({ stepper, type, setData }) => {
             <h4 style={{ textAlign: "center" }}>Skills</h4>
 
             <CardBody className="invoice-padding invoice-product-details">
-              <Repeater count={values.seeker_skill_sets.length}>
+              <Repeater count={values.seeker_skills.length}>
                 {(i) => {
                   const Tag = i === 0 ? "div" : SlideDown
                   return (
@@ -1139,32 +1154,21 @@ const EducationAndExperienceForm = ({ stepper, type, setData }) => {
                                 <Label for="invoice-to" className="form-label">
                                   Skill Name*
                                 </Label>
-                                <Select
-                                  name={`seeker_skill_sets.${i}.skill_set_id`}
-                                  defaultValue={
-                                    values.seeker_skill_sets[i].skill_set_id
-                                  }
-                                  onChange={(e) => {
-                                    setFieldValue(
-                                      `seeker_skill_sets.${i}.skill_set_id`,
-                                      e.value
-                                    )
-                                  }}
-                                  theme={selectThemeColors}
-                                  className="react-select"
-                                  classNamePrefix="select"
-                                  options={skillOptions}
-                                  handleBlur={handleBlur}
-                                  isClearable={false}
-                                  placeholder="Select Skill"
-                                  bsSize="sm"
+                                <Input
+                                  value={values.seeker_skills[i].skill_name}
+                                  name={`seeker_skills.${i}.skill_name`}
+                                  onChange={handleChange}
+                                  onBlur={handleBlur}
+                                  placeholder="Skill Name"
+                                  bsSize="md"
                                 />
+
                                 {isSubmit &&
-                                  errors.seeker_skill_sets &&
-                                  errors.seeker_skill_sets[i] &&
-                                  errors.seeker_skill_sets[i].skill_set_id && (
+                                  errors.seeker_skills &&
+                                  errors.seeker_skills[i] &&
+                                  errors.seeker_skills[i].skill_name && (
                                     <div className="text-danger">
-                                      {errors.seeker_skill_sets[i].skill_set_id}
+                                      {errors.seeker_skills[i].skill_name}
                                     </div>
                                   )}
                               </Col>
@@ -1173,15 +1177,15 @@ const EducationAndExperienceForm = ({ stepper, type, setData }) => {
                                   Skill Level*
                                 </Label>
                                 <Select
-                                  name={`seeker_skill_sets.${i}.skill_level`}
+                                  name={`seeker_skills.${i}.skill_level`}
                                   defaultValue={skillsLevelOptions.find(
                                     (obj) =>
                                       obj.value ===
-                                      values.seeker_skill_sets[i].skill_level
+                                      values.seeker_skills[i].skill_level
                                   )}
                                   onChange={(e) => {
                                     setFieldValue(
-                                      `seeker_skill_sets.${i}.skill_level`,
+                                      `seeker_skills.${i}.skill_level`,
                                       e.value
                                     )
                                   }}
@@ -1194,19 +1198,19 @@ const EducationAndExperienceForm = ({ stepper, type, setData }) => {
                                   bsSize="sm"
                                 />
                                 {isSubmit &&
-                                  errors.seeker_skill_sets &&
-                                  errors.seeker_skill_sets[i] &&
-                                  errors.seeker_skill_sets[i].skill_level && (
+                                  errors.seeker_skills &&
+                                  errors.seeker_skills[i] &&
+                                  errors.seeker_skills[i].skill_level && (
                                     <div className="text-danger">
-                                      {errors.seeker_skill_sets[i].skill_level}
+                                      {errors.seeker_skills[i].skill_level}
                                     </div>
                                   )}
                               </Col>
                             </Row>
                           </Row>
 
-                          <div className="d-flex justify-content-center  invoice-product-actions px-25">
-                            {values.seeker_skill_sets.length > 1 && (
+                          <div className="d-flex justify-content-center invoice-product-actions px-25">
+                            {values.seeker_skills.length > 1 && (
                               <X
                                 size={18}
                                 className="cursor-pointer"
@@ -1216,10 +1220,10 @@ const EducationAndExperienceForm = ({ stepper, type, setData }) => {
                                     all_skills.find(
                                       (option) =>
                                         option.value ===
-                                        values.seeker_skill_sets[i].skill_set_id
+                                        values.seeker_skills[i].skill_name
                                     )
                                   ])
-                                  deleteForm(e, i, "seeker_skill_sets")
+                                  deleteForm(e, i, "seeker_skills")
                                 }}
                               />
                             )}
@@ -1238,13 +1242,13 @@ const EducationAndExperienceForm = ({ stepper, type, setData }) => {
                     size="sm"
                     className="btn-add-new"
                     disabled={
-                      values.seeker_skill_sets.length === all_skills?.length
+                      values.seeker_skills.length === all_skills?.length
                     }
                     onClick={() => {
                       //for skill
-                      setFieldValue("seeker_skill_sets", [
-                        ...values.seeker_skill_sets,
-                        { ...initialValues.seeker_skill_sets[0] }
+                      setFieldValue("seeker_skills", [
+                        ...values.seeker_skills,
+                        { ...initialValues.seeker_skills[0] }
                       ])
                     }}
                   >
